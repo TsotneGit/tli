@@ -2,15 +2,18 @@ import pyfirmata
 
 
 class ArduinoUno:
-    def __init__(self, port: str) -> None:
+    def __init__(self, port: str = "COM5") -> None:
         self.pins = [i for i in range(14)]
         self.board = pyfirmata.Arduino(port)
         self.it = pyfirmata.util.Iterator(self.board)
 
-    def dpin_mode(self, pin: str, mode: str) -> None:
+    def dpin_mode(self, pin: int, mode: str) -> None:
         """Sets pin mode"""
         try:
-            self.board.digital[pin].mode = mode
+            if mode.lower() == "input":
+                self.board.digital[pin].mode = pyfirmata.INPUT
+            elif mode.lower() == "output":
+                self.board.digital[pin].mode = pyfirmata.OUTPUT
         except IndexError:
             raise Exception("Invalid pin number")
 

@@ -1,16 +1,26 @@
 from flask import Flask
 from flask_restful import Api, Resource
+from hardware_api import ArduinoUno
+
 
 app = Flask(__name__)
 api = Api(app)
+board = ArduinoUno("COM5")
 
 
-class HelloWorld(Resource):
+class LightOn(Resource):
     def get(self):
-        return {"data": "Hello world!"}
+        board.digital_write(2, True)
 
-    def post(self, data):
-        print(data)
+        return {"Response": "200Ok"}
 
 
-api.add_resource(HelloWorld, "/")
+class LightOff(Resource):
+    def get(self):
+        board.digital_write(2, False)
+
+        return {"Response": "200Ok"}
+
+
+api.add_resource(LightOn, "/lighton")
+api.add_resource(LightOff, "/lightoff")
